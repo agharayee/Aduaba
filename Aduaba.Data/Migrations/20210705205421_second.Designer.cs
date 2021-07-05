@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aduaba.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210628164805_Testing Identity")]
-    partial class TestingIdentity
+    [Migration("20210705205421_second")]
+    partial class second
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,6 +40,25 @@ namespace Aduaba.Data.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("Aduaba.Data.Models.CartWithSession", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProductId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ShoppingCartId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CartWithSessions");
                 });
 
             modelBuilder.Entity("Aduaba.Data.Models.Category", b =>
@@ -140,6 +159,9 @@ namespace Aduaba.Data.Migrations
                     b.Property<string>("CartId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("CartWithSessionId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("CategoryId")
                         .HasColumnType("nvarchar(450)");
 
@@ -170,6 +192,8 @@ namespace Aduaba.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CartId");
+
+                    b.HasIndex("CartWithSessionId");
 
                     b.HasIndex("CategoryId");
 
@@ -396,6 +420,10 @@ namespace Aduaba.Data.Migrations
                         .WithMany("Product")
                         .HasForeignKey("CartId");
 
+                    b.HasOne("Aduaba.Data.Models.CartWithSession", null)
+                        .WithMany("Product")
+                        .HasForeignKey("CartWithSessionId");
+
                     b.HasOne("Aduaba.Data.Models.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId");
@@ -488,6 +516,11 @@ namespace Aduaba.Data.Migrations
                 });
 
             modelBuilder.Entity("Aduaba.Data.Models.Cart", b =>
+                {
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Aduaba.Data.Models.CartWithSession", b =>
                 {
                     b.Navigation("Product");
                 });

@@ -18,7 +18,7 @@ namespace Aduaba.Data.DbContexts
         public DbSet<Category> Categories  { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Cart> Carts { get; set; }
-        public DbSet<Customer> Customers { get; set; }
+        
         public DbSet<ShippingAddress> ShippingAddress { get; set; }
         public DbSet<WishList> WishList { get; set; }
         public DbSet<WishListItem> WishListItems { get; set; }

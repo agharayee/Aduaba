@@ -159,12 +159,12 @@ namespace Aduaba.Services
         }
         public void DeleteCustomer(Customer customer)
         {
-            if (customer == null)
-            {
-                throw new ArgumentNullException(nameof(customer));
-            }
-            _context.Customers.Remove(customer);
-            _context.SaveChanges();
+            //if (customer == null)
+            //{
+            //    throw new ArgumentNullException(nameof(customer));
+            //}
+            //_context.Customers.Remove(customer);
+            //_context.SaveChanges();
         }
 
     }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aduaba.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210630084743_AccountDb")]
-    partial class AccountDb
+    [Migration("20210705205219_firts")]
+    partial class firts
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -239,41 +239,6 @@ namespace Aduaba.Data.Migrations
                     b.ToTable("ShippingAddress");
                 });
 
-            modelBuilder.Entity("Aduaba.Data.Models.WishList", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("WishList");
-                });
-
-            modelBuilder.Entity("Aduaba.Data.Models.WishListItem", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProductId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("WishListId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("WishListId");
-
-                    b.ToTable("WishListItems");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -440,30 +405,6 @@ namespace Aduaba.Data.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("Aduaba.Data.Models.WishList", b =>
-                {
-                    b.HasOne("Aduaba.Data.Models.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId");
-
-                    b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("Aduaba.Data.Models.WishListItem", b =>
-                {
-                    b.HasOne("Aduaba.Data.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId");
-
-                    b.HasOne("Aduaba.Data.Models.WishList", "WishList")
-                        .WithMany("WishListItems")
-                        .HasForeignKey("WishListId");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("WishList");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -528,11 +469,6 @@ namespace Aduaba.Data.Migrations
             modelBuilder.Entity("Aduaba.Data.Models.Category", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("Aduaba.Data.Models.WishList", b =>
-                {
-                    b.Navigation("WishListItems");
                 });
 #pragma warning restore 612, 618
         }

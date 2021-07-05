@@ -2,7 +2,7 @@
 
 namespace Aduaba.Data.Migrations
 {
-    public partial class AddedWishList : Migration
+    public partial class second : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,9 +17,9 @@ namespace Aduaba.Data.Migrations
                 {
                     table.PrimaryKey("PK_WishList", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_WishList_Customers_CustomerId",
+                        name: "FK_WishList_AspNetUsers_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "Customers",
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
