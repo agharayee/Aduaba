@@ -44,11 +44,11 @@ namespace Aduaba
             services.AddScoped<IWishListService, WIshListService>();
             services.Configure<IdentityOptions>(option =>
             {
-                option.Password.RequireDigit = true;
-                option.Password.RequireUppercase = true;
-                option.Password.RequireNonAlphanumeric = true;
-                option.Password.RequiredLength = 8;
-                option.Password.RequireLowercase = true;
+                option.Password.RequireDigit = false;
+                option.Password.RequireUppercase = false;
+                option.Password.RequireNonAlphanumeric = false;
+                option.Password.RequiredLength = 6;
+                option.Password.RequireLowercase = false;
                 option.SignIn.RequireConfirmedEmail = false;
                 option.SignIn.RequireConfirmedPhoneNumber = false;
 
@@ -90,18 +90,13 @@ namespace Aduaba
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider svp)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aduaba v1");
-                c.RoutePrefix = string.Empty;
-            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-               
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aduaba v1"));
             }
 
             app.UseHttpsRedirection();
@@ -115,13 +110,6 @@ namespace Aduaba
             {
                 endpoints.MapControllers();
             });
-            MigrateDatabaseContexts(svp);
-        }
-
-        public void MigrateDatabaseContexts(IServiceProvider svp)
-        {
-            var applicationDbContext = svp.GetRequiredService<ApplicationDbContext>();
-            applicationDbContext.Database.Migrate();
         }
     }
 }
