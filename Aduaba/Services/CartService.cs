@@ -133,16 +133,16 @@ namespace Aduaba.Services
             _context.SaveChanges();
         }
 
-        //public List<CartWithSession> GetShoppingCartItems()
-        //{
-        //    List<CartWithSession> productInCart = new List<CartWithSession>();
-        //    productInCart = _context.CartWithSessions.Where(c => c.ShoppingCartId == ShoppingCartId ).ToList();
-        //    foreach (var products in productInCart)
-        //    {
-        //        products.Product = _context.Products.Where(p => p.Id == products.ProductId).ToList();
-        //    }
-        //    return productInCart;
-        //}
+        public List<CartWithSession> GetShoppingCartItems()
+        {
+            List<CartWithSession> productInCart = new List<CartWithSession>();
+            productInCart = _context.CartWithSessions.Where(c => c.ShoppingCartId == ShoppingCartId ).ToList();
+            foreach (var products in productInCart)
+            {
+                products.Product = _context.Products.Where(p => p.Id == products.ProductId).ToList();
+            }
+            return productInCart;
+        }
 
         public void RemoveFromCartWithSession(string productId)
         {
