@@ -1,6 +1,7 @@
 ﻿using Aduaba.Data.Models;
 using Aduaba.Dtos;
 using Aduaba.Interfaces;
+using Aduaba.RequestFeatures;
 using Aduaba.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -20,12 +21,14 @@ namespace Aduaba.Controllers
         private readonly IProduct _service;
         private readonly IMapper _mapper;
         private readonly ICategory _category;
+        private readonly IUriService _uriService;
 
-        public ProductController(IProduct service, IMapper mapper, ICategory category)
+        public ProductController(IProduct service, IMapper mapper, ICategory category, IUriService uriService)
         {
             _service = service;
             _mapper = mapper;
             _category = category;
+            _uriService = uriService;
         }
         [HttpPost]
         [Route("addProducts")]
@@ -47,10 +50,13 @@ namespace Aduaba.Controllers
         [HttpGet]
         [Route("getProducts")]
         [Authorize]
-        public IActionResult GetAllProducts()
+        public IActionResult GetAllProducts([FromQuery] PaginationFilter filter)
         {
+            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var products = _service.GetAllProducts();
+            var products = _service.GetAllProducts(validFilter);
+            var totalProducts = _service.GetTotalProducts();
             var mappedProducts = _mapper.Map<IEnumerable<GetProductDto>>(products);
             if (!mappedProducts.Any())
             {
@@ -59,7 +65,11 @@ namespace Aduaba.Controllers
             else
             {
                 return Ok(mappedProducts);
+
             }
+            
+            
+
         }
         [HttpGet]
         [Route("productId")]

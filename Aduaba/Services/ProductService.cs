@@ -1,6 +1,8 @@
 ﻿using Aduaba.Data.DbContexts;
 using Aduaba.Data.Models;
 using Aduaba.Interfaces;
+using Aduaba.RequestFeatures;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,9 +41,14 @@ namespace Aduaba.Services
             _context.SaveChanges();
         }
 
-        public IEnumerable<Product> GetAllProducts()
+        public IEnumerable<Product> GetAllProducts(PaginationFilter filter)
         {
-            var products = _context.Products.ToList();
+            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+            var products = _context.Products.Include(e => e.Category).OrderBy(c => c.Name)
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToList();
+
             return products;
         }
 
@@ -72,7 +79,11 @@ namespace Aduaba.Services
             else return _context.Products.Any(p => p.Id == productId);
         }
 
-        
+        public int GetTotalProducts()
+        {
+            var totalRecords =  _context.Products.Count();
+            return totalRecords;
+        }
 
         public void UpdateProduct(Product product)
         {
