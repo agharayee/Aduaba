@@ -31,6 +31,7 @@ namespace Aduaba.Services
             CartItem ExistingProducts = default;
             if (productId == null) throw new ArgumentNullException(nameof(productId));
             var existingProductInCart = _context.Carts.Include(w => w.CartItem).Where(c => c.CustomerId == customerId).ToList();
+            var product = _context.Products.FirstOrDefault(c => c.Id == productId);
 
             if (existingProductInCart == null)
             {
@@ -39,7 +40,8 @@ namespace Aduaba.Services
                     Id = Guid.NewGuid().ToString(),
                     ProductId = productId,
                     CardId = Guid.NewGuid().ToString(),
-                    Quantity = quanity
+                    Quantity = quanity,
+                    CartItemTotal = product.Amount * quanity
                 };
 
                 CartItems.Add(products);
@@ -69,12 +71,13 @@ namespace Aduaba.Services
                         CartItem = CartItems,
                         CustomerId = customerId,
                     };
-                    products = new CartItem
+                     products = new CartItem
                     {
                         Id = Guid.NewGuid().ToString(),
                         ProductId = productId,
                         Quantity = quanity,
                         CardId = cartId,
+                        CartItemTotal = product.Amount * quanity
                     };
 
                     CartItems.Add(products);
@@ -86,6 +89,7 @@ namespace Aduaba.Services
                 else
                 {
                     ExistingProducts.Quantity += quanity;
+                    ExistingProducts.CartItemTotal = product.Amount * ExistingProducts.Quantity;
                 }
             }
             _context.SaveChanges();

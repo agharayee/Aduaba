@@ -4,14 +4,16 @@ using Aduaba.Data.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Aduaba.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210707092828_added feature")]
+    partial class addedfeature
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,9 +46,6 @@ namespace Aduaba.Data.Migrations
 
                     b.Property<string>("CartId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("CartItemTotal")
-                        .HasColumnType("Money");
 
                     b.Property<string>("OrderId")
                         .HasColumnType("nvarchar(450)");
@@ -194,11 +193,14 @@ namespace Aduaba.Data.Migrations
                     b.Property<string>("OrderType")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("PaymentStatus")
+                        .HasColumnType("bit");
+
                     b.Property<string>("ShippingAddressId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("TotalAmountToPay")
-                        .HasColumnType("Money");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -215,9 +217,6 @@ namespace Aduaba.Data.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("PaymentStatus")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");

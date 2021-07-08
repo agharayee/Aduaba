@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,5 +15,7 @@ namespace Aduaba.Data.Models
         public int Quantity { get; set; }
         public Cart Cart { get; set; }
         public string CardId { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal CartItemTotal { get; set; }
     }
 }

@@ -29,15 +29,15 @@ namespace Aduaba.Controllers
         }
         [HttpPost]
         [Route("addProducts")]
-        public IActionResult AddNewProduct([FromBody]AddProductDto product)
+        public IActionResult AddNewProduct([FromBody] AddProductDto product)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 var productIem = _mapper.Map<Product>(product);
                 productIem.Id = Guid.NewGuid().ToString();
                 _service.AddProduct(productIem);
                 return Created("Product created successfully",
-              new { ProductName = productIem.Name, ProductAmount = productIem.Amount, Description=productIem.ShortDescription, ProductId = productIem.Id } );
+              new { ProductName = productIem.Name, ProductAmount = productIem.Amount, Description = productIem.ShortDescription, ProductId = productIem.Id });
             }
             else
             {
@@ -46,7 +46,6 @@ namespace Aduaba.Controllers
         }
         [HttpGet]
         [Route("getProducts")]
-        [Authorize]
         public IActionResult GetAllProducts()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -63,15 +62,15 @@ namespace Aduaba.Controllers
         }
         [HttpGet]
         [Route("productId")]
-        public IActionResult GetProductById([FromQuery]string productId)
+        public IActionResult GetProductById([FromQuery] string productId)
         {
-            if (productId == null) 
+            if (productId == null)
             {
                 return BadRequest();
             }
             else
             {
-                if (_service.ProductExists(productId)) 
+                if (_service.ProductExists(productId))
                 {
                     var productFound = _service.GetProductById(productId);
                     var mappedProduct = _mapper.Map<GetProductDto>(productFound);
@@ -109,7 +108,7 @@ namespace Aduaba.Controllers
         }
         [HttpPut]
         [Route("updateProduct")]
-        public IActionResult UpdateProductById([FromQuery]string productId, [FromBody]UpdateProductDto updateProduct)
+        public IActionResult UpdateProductById([FromQuery] string productId, [FromBody] UpdateProductDto updateProduct)
         {
             var productToUpdate = _service.GetProductById(productId);
             if (productToUpdate == null)
@@ -118,9 +117,81 @@ namespace Aduaba.Controllers
             }
             _mapper.Map(updateProduct, productToUpdate);
             _service.UpdateProduct(productToUpdate);
-            
+
             return NoContent();
         }
+
+        [HttpGet]
+        [Route("Search")]
+        public async Task<IActionResult> SearchProduct(string searchParam)
+        {
+            if (searchParam == null)
+            {
+                var products = _service.GetAllProducts();
+                var mappedProducts = _mapper.Map<IEnumerable<GetProductDto>>(products);
+                return Ok(mappedProducts);
+            }
+            else
+            {
+                var products = await _service.SearchResult(searchParam);
+                if(products.Count == 0)
+                {
+                    return Ok("No product found");
+                }else
+                {
+                    var mappedProducts = _mapper.Map<IEnumerable<GetProductDto>>(products);
+                    return Ok(mappedProducts);
+                }
+               
+            }
+        }
+
+
+        [HttpGet]
+        [Route("FilterProduct")]
+        public async Task<IActionResult> FilterProduct(decimal? minValue, decimal maxValue = decimal.MaxValue)
+        {
+            if (minValue == null)
+            {
+                var products = _service.GetAllProducts();
+                var mappedProducts = _mapper.Map<IEnumerable<GetProductDto>>(products);
+                return Ok(mappedProducts);
+            }
+            else
+            {
+                var filterProducts = await _service.FilterByPrice(minValue, maxValue);
+                var mappedProducts = _mapper.Map<IEnumerable<GetProductDto>>(filterProducts);
+                return Ok(mappedProducts);
+            }
+        }
+
+        [HttpGet]
+        [Route("BestSellingProduct")]
+        public async Task<IActionResult> BestSellingProduct()
+        {
+            var bestSellingProducts = await _service.BestSellingProduct();
+            if (bestSellingProducts == null) return Ok("No product Found");
+            else
+            {
+                var mappedBestSellingProducts = _mapper.Map<IEnumerable<GetProductDto>>(bestSellingProducts);
+                return Ok(mappedBestSellingProducts);
+            }
+        }
+
+        [HttpGet]
+        [Route("FeaturedProduct")]
+        public async Task<IActionResult> FeaturedProduct()
+        {
+            var featuredProducts = await _service.FeaturedProducts();
+            if (featuredProducts == null) return Ok("No product Found");
+            else
+            {
+                var mappedfeaturedProducts = _mapper.Map<IEnumerable<GetProductDto>>(featuredProducts);
+                return Ok(mappedfeaturedProducts);
+            }
+        }
+
+
         [HttpDelete]
         [Route("deleteProducts")]
         public IActionResult DeleteProductById([FromQuery] string productId)
@@ -134,5 +205,6 @@ namespace Aduaba.Controllers
             return NoContent();
         }
     }
-    
 }
+    
+

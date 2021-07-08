@@ -1,6 +1,7 @@
 ﻿using Aduaba.Data.DbContexts;
 using Aduaba.Data.Models;
 using Aduaba.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +55,7 @@ namespace Aduaba.Services
                 return products;
             }
         }
-       
+
 
         public Product GetProductById(string productId)
         {
@@ -72,8 +73,31 @@ namespace Aduaba.Services
             else return _context.Products.Any(p => p.Id == productId);
         }
 
-        
 
+        public async Task<List<Product>> SearchResult(string searchParam)
+        {
+            var products = await _context.Products.Include(c => c.Category).Where(s => s.Name.Contains(searchParam) || s.ShortDescription
+                                        .Contains(searchParam) || s.LongDescription.Contains(searchParam) || s.Category.Name.Contains(searchParam))
+                                            .ToListAsync();
+            return products;
+        }
+
+        public async Task<List<Product>> FilterByPrice(decimal? minPrice, decimal MaxPrice = decimal.MaxValue)
+        {
+            var products = await _context.Products.Where(c => c.Amount >= minPrice && c.Amount <= MaxPrice).OrderBy(c => c.Amount).ToListAsync();
+            return products;
+        }
+
+        public async Task<List<Product>> FeaturedProducts()
+        {
+            var products = await _context.Products.Where(c => c.IsFeaturedProduct == true).ToListAsync();
+            return products;
+        }
+        public async Task<List<Product>> BestSellingProduct()
+        {
+            var products = await _context.Products.Where(c => c.IsBestSelling == true).ToListAsync();
+            return products;
+        }
         public void UpdateProduct(Product product)
         {
             _context.SaveChanges();

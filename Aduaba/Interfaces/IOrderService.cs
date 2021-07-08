@@ -9,10 +9,12 @@ namespace Aduaba.Interfaces
 {
     public interface IOrderService
     {
-        Task<List<CheckOutDto>> GetOrderItems(List<string> orderItems);
+        Task<OrderStatus> TrackOrder(string trackingId);
+        Task ChangeOrderStatus(string orderId, string orderStatus);
+        Task<Order> GetOrderItems(List<string> orderItemId, string customerId);
         Task<ShippingAddress> GetCustomerShippingAddress(string customerId);
         Task ProcessPayment();
-        Task<Order> OrderItems(List<string> orderItems, string customerId);
+        Task<Order> OrderItems(string orderId, string customerId);
         Task<List<Order>> OrderItems(string customerId);
     }
 }

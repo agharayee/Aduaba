@@ -13,8 +13,11 @@ namespace Aduaba.Profiles
         public MapperProfile()
         {
             CreateMap<Category, AddCategoryDto>().ReverseMap();
-            CreateMap<Product, AddProductDto>().ReverseMap();
-            CreateMap<Product, GetProductDto>().ReverseMap();
+            CreateMap<Product, AddProductDto>().ForMember(c => c.FeaturedProduct, opt => opt.MapFrom(scr => scr.IsFeaturedProduct))
+                .ForMember(c => c.BestSelling, opt => opt.MapFrom(scr => scr.IsBestSelling))
+                .ReverseMap();
+            CreateMap<Product, GetProductDto>().ForMember(c => c.FeaturedProduct, opt => opt.MapFrom(scr => scr.IsFeaturedProduct))
+                .ForMember(c => c.BestSelling, opt => opt.MapFrom(scr => scr.IsBestSelling)).ReverseMap();
             CreateMap<Category, GetCategoryDto>().ReverseMap();
 
             CreateMap<Product, UpdateProductDto>().ReverseMap();

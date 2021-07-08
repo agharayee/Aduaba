@@ -20,8 +20,9 @@ namespace Aduaba.Data.Models
         public bool IsLike { get; set; }
         public bool InStock { get; set; }
         public int Quantity { get; set; }
-        [Column (TypeName = "Money")]
+        [Column(TypeName = "Money")]
         public decimal Amount { get; set; }
-
+        public bool IsFeaturedProduct { get; set; }
+        public bool IsBestSelling { get; set; }
     }
 }
