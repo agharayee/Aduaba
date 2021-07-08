@@ -51,6 +51,9 @@ namespace Aduaba.Controllers
             _mapper.Map(updateCategory, categoryToUpdate);
             _service.UpdateCategory(categoryToUpdate);
 
+            
+
+
             return NoContent();
         }
         //[HttpDelete]

@@ -35,6 +35,8 @@ namespace Aduaba
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IEmailSender, EmailSenderService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IProduct, ProductService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICategory, CategoryService>();
@@ -62,6 +64,10 @@ namespace Aduaba
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                }).AddGoogle(googleOptions =>
+                {
+                    googleOptions.ClientId = Configuration["Google:ClientId"];
+                    googleOptions.ClientSecret = Configuration["Google:ClientSecret"];
                 })
             //Adding JWT Bearers 
             .AddJwtBearer(options =>
@@ -92,16 +98,22 @@ namespace Aduaba
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider svp)
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aduaba v1");
-                c.RoutePrefix = string.Empty;
-            });
+            //app.UseSwagger();
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aduaba v1");
+            //    c.RoutePrefix = string.Empty;
+            //});
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-               
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aduaba v1");
+                   
+                });
+
             }
 
             app.UseHttpsRedirection();

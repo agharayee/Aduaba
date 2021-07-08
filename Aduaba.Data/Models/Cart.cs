@@ -11,9 +11,7 @@ namespace Aduaba.Data.Models
     {
         [Key]
         public string Id { get; set; }
-        public List<Product> Product { get; set; }
-        public string ProductId { get; set; }
-        public int Quantity { get; set; }
+        public List<CartItem> CartItem { get; set; }
         public Customer Customer { get; set; }
         public string CustomerId { get; set; }
     }

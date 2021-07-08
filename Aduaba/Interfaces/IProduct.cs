@@ -8,7 +8,6 @@ namespace Aduaba.Interfaces
 {
     public interface IProduct
     {
-       
         void AddProduct(Product product);
         IEnumerable<Product> GetAllProducts();
         Product GetProductById(string productId);
@@ -16,6 +15,10 @@ namespace Aduaba.Interfaces
         void UpdateProduct(Product product);
         void DeleteProduct(Product product);
         IEnumerable<Product> GetAllProductsInACataegoryById(string categoryId);
-        
+        Task<List<Product>> SearchResult(string searchParam);
+        Task<List<Product>> FilterByPrice(decimal? minPrice, decimal MaxPrice = decimal.MaxValue);
+        Task<List<Product>> BestSellingProduct();
+        Task<List<Product>> FeaturedProducts();
+
     }
 }

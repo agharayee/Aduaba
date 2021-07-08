@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 
 namespace Aduaba.Dtos
 {
-    public class GetCartDto
+    public class GetOrderDto
     {
+        public string OrderId { get; set; }
         public string ProductName { get; set; }
-        public decimal UnitPrice { get; set; }
+        public string ManufacturerName { get; set; }
+        public string ProductImage { get; set; }
         public int Quantity { get; set; }
         public decimal Total { get; set; }
-        public string CartItemId { get; set; }
+        public string Instock { get; set; }
     }
 }

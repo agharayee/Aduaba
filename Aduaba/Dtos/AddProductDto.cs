@@ -32,5 +32,8 @@ namespace Aduaba.Dtos
         [Column(TypeName = "Money")]
         public decimal Amount { get; set; }
 
+        public bool BestSelling { get; set; }
+        public bool FeaturedProduct { get; set; }
+
     }
 }

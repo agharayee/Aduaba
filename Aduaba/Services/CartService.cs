@@ -14,70 +14,132 @@ namespace Aduaba.Services
     public class CartService : ICartService
     {
         private readonly ApplicationDbContext _context;
-        List<Product> productsInCart { get; set; }
+        List<Product> ProductsInCart { get; set; }
         Cart customerCart { get; set; }
         public string ShoppingCartId { get; set; }
 
         public CartService(ApplicationDbContext context)
         {
-            productsInCart = new List<Product>();
+            ProductsInCart = new List<Product>();
             this._context = context;
         }
 
         public void AddToCart(string productId, int quanity, string customerId)
         {
-            var existingProductInTheCart = _context.Carts.Where(c => c.CustomerId == customerId).ToList();
-            if (existingProductInTheCart == null)
+            List<CartItem> CartItems = new List<CartItem>();
+            CartItem products = default;
+            CartItem ExistingProducts = default;
+            if (productId == null) throw new ArgumentNullException(nameof(productId));
+            var existingProductInCart = _context.Carts.Include(w => w.CartItem).Where(c => c.CustomerId == customerId).ToList();
+            var product = _context.Products.FirstOrDefault(c => c.Id == productId);
+
+            if (existingProductInCart == null)
             {
-                Cart cart = new Cart
+                products = new CartItem
                 {
-                    ProductId = productId,
-                    Quantity = quanity,
-                    CustomerId = customerId,
                     Id = Guid.NewGuid().ToString(),
-                    //TotalAmount = GetShoppingCartTotal(customerId),
+                    ProductId = productId,
+                    CardId = Guid.NewGuid().ToString(),
+                    Quantity = quanity,
+                    CartItemTotal = product.Amount * quanity
                 };
-                _context.Carts.Add(cart);
+
+                CartItems.Add(products);
+                var CartToBeAdded = new Cart
+                {
+                    CartItem = CartItems,
+                    CustomerId = customerId,
+                };
+
+                _context.Carts.Add(CartToBeAdded);
+
             }
             else
             {
-                var existingProduct = existingProductInTheCart.FirstOrDefault(p => p.ProductId == productId);
-                if (existingProduct == null)
+                foreach (var items in existingProductInCart)
                 {
-                    Cart cart = new Cart
+                    ExistingProducts = items.CartItem.FirstOrDefault(w => w.ProductId == productId);
+                    if (ExistingProducts != null) break;
+
+                }
+                if (ExistingProducts == null)
+                {
+                    string cartId = Guid.NewGuid().ToString();
+                    var CartToBeAdded = new Cart
                     {
+                        Id = cartId,
+                        CartItem = CartItems,
+                        CustomerId = customerId,
+                    };
+                     products = new CartItem
+                    {
+                        Id = Guid.NewGuid().ToString(),
                         ProductId = productId,
                         Quantity = quanity,
-                        CustomerId = customerId,
-                        Id = Guid.NewGuid().ToString(),
-                        //TotalAmount = GetShoppingCartTotal(customerId),
+                        CardId = cartId,
+                        CartItemTotal = product.Amount * quanity
                     };
-                    _context.Carts.Add(cart);
+
+                    CartItems.Add(products);
+
+
+                    _context.Carts.Add(CartToBeAdded);
                 }
+
                 else
                 {
-                    existingProduct.Quantity += quanity;
+                    ExistingProducts.Quantity += quanity;
+                    ExistingProducts.CartItemTotal = product.Amount * ExistingProducts.Quantity;
                 }
             }
             _context.SaveChanges();
         }
 
-        public List<Cart> GetCart(string customerId)
+
+        public List<CartItem> GetCart(string customerId)
         {
-            List<Cart> productInCart = new List<Cart>();
-            productInCart = _context.Carts.Where(c => c.CustomerId == customerId).ToList();
-            foreach (var products in productInCart)
+            if (customerId == null) throw new ArgumentNullException(nameof(customerId));
+            else
             {
-                products.Product = _context.Products.Where(p => p.Id == products.ProductId).ToList();
+                CartItem wishListItem = default;
+                var productsInWishList = new List<CartItem>();
+                var customerWishList = _context.Carts.Include(c => c.CartItem).Where(c => c.CustomerId == customerId).ToList();
+                if (customerWishList == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    foreach (var item in customerWishList)
+                    {
+                        foreach (var cart in item.CartItem)
+                        {
+                            cart.Product = _context.Products.First(c => c.Id == cart.ProductId);
+                            wishListItem = new CartItem
+                            {
+                                Id = cart.Id,
+                                Product = cart.Product,
+                                Quantity = cart.Quantity,
+
+
+                            };
+                            productsInWishList.Add(wishListItem);
+                        }
+                    }
+                    return productsInWishList;
+
+                }
             }
-            return productInCart;
         }
 
         public void RemoveFromCart(string productId, string customerId)
         {
-            var foundProductInCart = _context.Carts.Where(c => c.CustomerId == customerId);
-            var productToRemove = foundProductInCart.FirstOrDefault(p => p.ProductId == productId);
-            _context.Carts.Remove(productToRemove);
+            var customerWishList = _context.Carts.Include(w => w.CartItem).Where(c => c.CustomerId == customerId).ToList();
+            foreach (var items in customerWishList)
+            {
+                var itemTodelete = items.CartItem.FirstOrDefault(w => w.ProductId == productId);
+                items.CartItem.Remove(itemTodelete);
+            }
             _context.SaveChanges();
         }
 
@@ -136,7 +198,7 @@ namespace Aduaba.Services
         public List<CartWithSession> GetShoppingCartItems()
         {
             List<CartWithSession> productInCart = new List<CartWithSession>();
-            productInCart = _context.CartWithSessions.Where(c => c.ShoppingCartId == ShoppingCartId ).ToList();
+            productInCart = _context.CartWithSessions.Where(c => c.ShoppingCartId == ShoppingCartId).ToList();
             foreach (var products in productInCart)
             {
                 products.Product = _context.Products.Where(p => p.Id == products.ProductId).ToList();
@@ -150,6 +212,13 @@ namespace Aduaba.Services
             var productToRemove = foundProductInCart.FirstOrDefault(p => p.ProductId == productId);
             _context.CartWithSessions.Remove(productToRemove);
             _context.SaveChanges();
+        }
+
+        public async Task UpdateQuantity(int quanity, string cartItem)
+        {
+            var foundItem = _context.CartItems.FirstOrDefault(c => c.Id == cartItem);
+            foundItem.Quantity = quanity;
+            await _context.SaveChangesAsync();
         }
     }
 }
