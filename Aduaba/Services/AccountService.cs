@@ -106,11 +106,20 @@ namespace Aduaba.Services
         }
 
 
-        public async Task<string> RegisterAsync(RegisterDto model)
+        public async Task<RegistrationDto> RegisterAsync(RegisterDto model)
         {
+            RegistrationDto returnDto = default; 
             var user = new Customer
             {
                 UserName = model.Email,
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                ImageUrl = model.ImageUrl,
+                PhoneNumber = model.PhoneNumber
+            };
+            returnDto = new RegistrationDto
+            {
                 Email = model.Email,
                 FirstName = model.FirstName,
                 LastName = model.LastName
@@ -122,17 +131,21 @@ namespace Aduaba.Services
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, Aduaba.Authorizations.Authorization.default_role.ToString());
-                    return $"User Registered with username {user.UserName}";
+                    return returnDto;
                 }
                 else
                 {
-                    return $"Password must contain uppercase, lowercase, special character, number and be eight digits long";
+                    var errors = AddErrors(result);
+                    returnDto.ErrorMessage = errors;
+                    return returnDto;
                 }
                 
             }
             else
             {
-                return $"Email {user.Email } is already registered.";
+                var error =  $"Email {user.Email } is already registered.";
+                returnDto.ErrorMessage = error;
+                return returnDto;
             }
         }
 
@@ -165,6 +178,16 @@ namespace Aduaba.Services
             //}
             //_context.Customers.Remove(customer);
             //_context.SaveChanges();
+        }
+
+        private string AddErrors(IdentityResult result)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var error in result.Errors)
+            {
+                sb.Append(error.Description + " Registration Failed. ");
+            }
+            return sb.ToString();
         }
 
     }

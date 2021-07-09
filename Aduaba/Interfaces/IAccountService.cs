@@ -10,7 +10,7 @@ namespace Aduaba.Interfaces
 {
     public interface IAccountService
     {
-        Task<string> RegisterAsync(RegisterDto model);
+        Task<RegistrationDto> RegisterAsync(RegisterDto model);
         Task<JwtSecurityToken> Login(LoginDto model);
         Task GetCart(string email);
         void UpdateCustomerDetails(Customer customer);

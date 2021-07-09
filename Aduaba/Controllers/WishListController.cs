@@ -14,7 +14,8 @@ using System.Threading.Tasks;
 namespace Aduaba.Controllers
 {
     [ApiController]
-   // [Route("WishList")]
+    [Authorize]
+    // [Route("WishList")]
     public class WishListController : ControllerBase 
     {
         private readonly IWishListService _service;
@@ -73,8 +74,8 @@ namespace Aduaba.Controllers
             else
             {
                 customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                wishList.CustomerId = customerId;
                 var customerWishlist = _mapper.Map<WishList>(wishList);
+                customerWishlist.CustomerId = customerId;
                 customerWishlist.Id = Guid.NewGuid().ToString();
                 await _service.AddToWishList(customerWishlist, wishList.ProductId);
 
@@ -87,7 +88,7 @@ namespace Aduaba.Controllers
         public IActionResult RemoveFromWishList([FromBody] RemoveFromWishListDto removeFromWishList)
         {
             customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (removeFromWishList.WishListItemId == null && removeFromWishList.CustomerId == null) return BadRequest();
+            if (removeFromWishList.WishListItemId == null) return BadRequest();
             else
             {
                 _service.RemoveFromWishList(removeFromWishList.WishListItemId, customerId);

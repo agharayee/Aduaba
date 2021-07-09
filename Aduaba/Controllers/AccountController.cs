@@ -35,6 +35,11 @@ namespace Aduaba.Controllers
             else
             {
                 var result = await _service.RegisterAsync(model);
+                if(result.ErrorMessage != null)
+                {
+                    return BadRequest(result.ErrorMessage);
+                }              
+                else
                 return Ok(result);
             }
         }
