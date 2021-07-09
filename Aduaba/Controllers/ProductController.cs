@@ -29,6 +29,7 @@ namespace Aduaba.Controllers
         }
         [HttpPost]
         [Route("addProducts")]
+        [Authorize]
         public IActionResult AddNewProduct([FromBody] AddProductDto product)
         {
             if (ModelState.IsValid)
@@ -108,6 +109,7 @@ namespace Aduaba.Controllers
         }
         [HttpPut]
         [Route("updateProduct")]
+        [Authorize]
         public IActionResult UpdateProductById([FromQuery] string productId, [FromBody] UpdateProductDto updateProduct)
         {
             var productToUpdate = _service.GetProductById(productId);
@@ -194,6 +196,7 @@ namespace Aduaba.Controllers
 
         [HttpDelete]
         [Route("deleteProducts")]
+        [Authorize]
         public IActionResult DeleteProductById([FromQuery] string productId)
         {
             var productToDelete = _service.GetProductById(productId);

@@ -2,6 +2,7 @@
 using Aduaba.Dtos;
 using Aduaba.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace Aduaba.Controllers
         }
         [HttpPost]
         [Route("addCategory")]
+        [Authorize]
         public IActionResult AddNewCategory([FromBody] AddCategoryDto category)
         {
             if (ModelState.IsValid)

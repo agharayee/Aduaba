@@ -8,19 +8,19 @@ namespace Aduaba.Dtos
 {
     public class AddShippingAddressDto
     {
-        [Required]
+        [Required(ErrorMessage ="Full Name is Required")]
         public string FullName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "PhoneNumber is Required")]
         public string PhoneNumber { get; set; }
         public string AlternativePhoneNumber { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Address is Required")]
         public string Address { get; set; }
         public string AdditionalInformation { get; set; }
-        [Required]
+        [Required(ErrorMessage = "State is Required")]
         public string State { get; set; }
-        [Required]
+        [Required(ErrorMessage = "City is Required")]
         public string City { get; set; }
-        [Required]
+        [Required(ErrorMessage = "LandMark is Required")]
         public string LandMark { get; set; }
         public string CustomerId { get; set; }
     }

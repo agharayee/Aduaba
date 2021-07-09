@@ -14,6 +14,7 @@ namespace Aduaba.Controllers
 {
     [ApiController]
    // [Route("ShippingAddress")]
+   [Authorize]
     public class ShippingAddressController : ControllerBase
     {
         private readonly IShippingAddressService _service;
