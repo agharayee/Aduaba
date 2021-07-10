@@ -37,6 +37,7 @@ namespace Aduaba
         {
             services.AddTransient<IEmailSender, EmailSenderService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddSingleton<ITextMessageService,TextMessageService>();
             services.AddScoped<IProduct, ProductService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICategory, CategoryService>();

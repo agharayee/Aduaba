@@ -52,11 +52,45 @@ namespace Aduaba.Controllers
             }
             _mapper.Map(updateCategory, categoryToUpdate);
             _service.UpdateCategory(categoryToUpdate);
-
-            
-
-
             return NoContent();
+        }
+
+        [HttpGet("categories")]
+        public IActionResult GetAllCategory()
+        {
+            List<GetCategoryDto> getCategories = new List<GetCategoryDto>();
+            var categories = _service.GetAllCategories();
+            foreach(var item in categories)
+            {
+                var categoryToReturn = new GetCategoryDto
+                {
+                    Id = item.Id,
+                    Name = item.Name
+                };
+                getCategories.Add(categoryToReturn);
+            }
+           
+            return Ok(getCategories);
+        }
+
+        [HttpGet("category")]
+        public IActionResult GetCategory(string categoryId)
+        {
+            if (categoryId == null) return BadRequest();
+            else
+            {
+                var category = _service.GetCategoryById(categoryId);
+                if (category == null) return Ok("Category is empty");
+                else
+                {
+                    var categoryToReturn = new GetCategoryDto
+                    {
+                        Id = category.Id,
+                        Name = category.Name
+                    };
+                    return Ok(categoryToReturn);
+                }
+            }
         }
         //[HttpDelete]
         //[Route("deleteCategory")]

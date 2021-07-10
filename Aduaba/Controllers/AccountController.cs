@@ -58,11 +58,9 @@ namespace Aduaba.Controllers
 
             else
             {
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(result),
-                    ValidTo = result.ValidTo.ToString("yyyy-MM-ddThh:mm:ss")
-                });
+
+                return Ok(result);
+              
             }
            
         }
@@ -96,6 +94,29 @@ namespace Aduaba.Controllers
             }
             _service.DeleteCustomer(customerToDelete);
             return NoContent();
+        }
+
+        [HttpPost("forgetPassword")]
+        public async Task<IActionResult> ForgetPassword([FromBody]string email)
+        {
+            var result = await  _service.ForgetPassword(email);
+            if (result.Errors != null) return BadRequest(result.Errors);
+            else
+            {
+
+                return Ok("Email Sent Successfully");
+            }
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ForgetPassword([FromQuery] string email, string token, [FromBody] ResetPasswordDto model)
+        {
+            var result = await _service.ResetPassword(model);
+            if (result.ErrorMessage != null) return BadRequest(result.ErrorMessage);
+            else
+            {
+                return Ok(result.Message);
+            }
         }
     }
 }

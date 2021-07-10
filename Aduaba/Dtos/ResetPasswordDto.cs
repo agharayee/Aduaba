@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 
 namespace Aduaba.Dtos
 {
-    public class ForgetPasswordDto
+    public class ResetPasswordDto
     {
         [Required]
         public string Email { get; set; }
-        public string  Errors { get; set; }
+        [Required]
         public string Token { get; set; }
-        public string RedirectUri { get; set; }
+        [Required]
+        public string NewPassword { get; set; }
+        [Required]
+        public string ComfirmPassword { get; set; }
+
     }
 }
