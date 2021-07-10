@@ -10,5 +10,6 @@ namespace Aduaba.Dtos
     {
         [Required(ErrorMessage ="CategoryName is Required")]
         public string Name { get; set; }
+
     }
 }

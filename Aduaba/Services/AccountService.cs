@@ -4,6 +4,7 @@ using Aduaba.Data.Models;
 using Aduaba.Dtos;
 using Aduaba.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -23,9 +24,12 @@ namespace Aduaba.Services
         private ApplicationDbContext _context;
         private ICartService _cartService;
         private IWishListService _wishList;
+        private IEmailSender _emailSender;
+        private ITextMessageService _textMessageService;
         string CustomerId { get; set; }
         public AccountService(UserManager<Customer> userManager, RoleManager<IdentityRole> roleManager, 
-            Microsoft.Extensions.Configuration.IConfiguration configuration, ApplicationDbContext context, ICartService cartService, IWishListService wishList)
+            Microsoft.Extensions.Configuration.IConfiguration configuration, ApplicationDbContext context, ICartService cartService, IWishListService wishList,
+                    IEmailSender emailSender, ITextMessageService textMessageService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -33,9 +37,11 @@ namespace Aduaba.Services
             _context = context;
             _wishList = wishList;
             _cartService = cartService;
+            _emailSender = emailSender;
+            _textMessageService = textMessageService;
         }
 
-        public async Task<JwtSecurityToken> Login(LoginDto model)
+        public async Task<LoginSucessfulDto> Login(LoginDto model)
         {
             JwtSecurityToken token = default;
             var user = await _userManager.FindByNameAsync(model.Email);
@@ -65,8 +71,16 @@ namespace Aduaba.Services
             {
                 return null;
             }
-            
-            return token;
+
+            var loginDto = new LoginSucessfulDto
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                ValidTo = token.ValidTo.ToString("yyyy-MM-ddThh:mm:ss"),
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                };
+            return loginDto;
             
         }
         
@@ -165,6 +179,76 @@ namespace Aduaba.Services
             }
         }
 
+        public async Task<ForgetPasswordDto> ForgetPassword(string email)
+        {
+            ForgetPasswordDto forgetPassword = default;
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                forgetPassword = new ForgetPasswordDto
+                {
+                    Errors = "No User Found with this email",
+                };
+            return forgetPassword;
+            }
+            else
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var encodedToken = Encoding.UTF8.GetBytes(token);
+                var validToken = WebEncoders.Base64UrlEncode(encodedToken);
+                string returnUrl = $"https://localhost:5001/ResetPassword?email={email}&token={validToken}";
+                //var body = "This is a test message";
+                
+                _emailSender.SendEmailAsync(email, "Password Reset", "<h3>Password Reset, Please follow the instrutions to reset your password</h3>" + $"<p>To reset your password<a " +
+                                             $"href='{ returnUrl  },'> Click here to reset your password</a></p>");
+               // _textMessageService.SendMessage(user.PhoneNumber, body);
+                forgetPassword = new ForgetPasswordDto
+                {
+                    Token = validToken,
+                    RedirectUri = returnUrl,
+                    
+                };
+                return forgetPassword;
+            }
+        }
+
+        public async Task<ResetPasswordReturnDto> ResetPassword(ResetPasswordDto resetPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(resetPassword.Email);
+            if (user == null)
+                return new ResetPasswordReturnDto
+                {
+                    IsSuccessful = false,
+                    Message = "No user associated with email",
+                };
+
+            if (resetPassword.NewPassword != resetPassword.ComfirmPassword)
+                return new ResetPasswordReturnDto
+                {
+                    IsSuccessful = false,
+                    Message = "Password doesn't match its confirmation",
+                };
+
+            var decodedToken = WebEncoders.Base64UrlDecode(resetPassword.Token);
+            string normalToken = Encoding.UTF8.GetString(decodedToken);
+
+            var result = await _userManager.ResetPasswordAsync(user, normalToken, resetPassword.NewPassword);
+
+            if (result.Succeeded)
+                return new ResetPasswordReturnDto
+                {
+                    Message = "Password has been reset successfully!",
+                    IsSuccessful = true,
+                };
+            
+            return new ResetPasswordReturnDto
+            {
+                Message = "Something went wrong",
+                IsSuccessful = false,
+                ErrorMessage = AddErrors(result),
+            };
+        }
+
         public bool CustomerExists(string customerId)
         {
             if (customerId == null) { throw new ArgumentNullException(nameof(customerId)); }
@@ -189,6 +273,10 @@ namespace Aduaba.Services
             }
             return sb.ToString();
         }
+
+
+        private static readonly Random r = new Random(DateTime.Now.Second);
+        public int Otp => r.Next(1, 19);
 
     }
 }
