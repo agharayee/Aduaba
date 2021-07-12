@@ -89,6 +89,7 @@ namespace Aduaba.Controllers
                     {
                         Id = category.Id,
                         Name = category.Name,
+                        Length = category.Products.Count,
                         ImageUrl = category.ImageUrl
                     };
                     return Ok(categoryToReturn);

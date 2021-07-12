@@ -66,6 +66,7 @@ namespace Aduaba.Controllers
                     else isAvailable = "Out of Stock";
                     var getAllProduct = new GetProductDto
                     {
+                        ProductId = item.Id,
                         FeaturedProduct = item.IsFeaturedProduct,
                         Amount = item.Amount,
                         IsAvailable = isAvailable,
@@ -96,8 +97,13 @@ namespace Aduaba.Controllers
             {
                 if (_service.ProductExists(productId))
                 {
+                    string isAvailable = default;
                     var productFound = _service.GetProductById(productId);
+                    if (productFound.InStock == true) isAvailable = "InStock";
+                    else isAvailable = "Out of Stock";
                     var mappedProduct = _mapper.Map<GetProductDto>(productFound);
+                    mappedProduct.IsAvailable = isAvailable;
+                    mappedProduct.ProductId = productFound.Id;
                     return Ok(mappedProduct);
                 }
                 else
@@ -120,8 +126,31 @@ namespace Aduaba.Controllers
                 if (_category.CategoryExists(categoryId))
                 {
                     var productFound = _service.GetAllProductsInACataegoryById(categoryId);
-                    var mappedProduct = _mapper.Map<IEnumerable<GetProductDto>>(productFound);
-                    return Ok(mappedProduct);
+                    List<GetProductDto> myString = new List<GetProductDto>(); ;
+                    string isAvailable = default;
+                    foreach (var item in productFound)
+                    {
+                        if (item.InStock == true) isAvailable = "InStock";
+                        else isAvailable = "Out of Stock";
+                        var getAllProduct = new GetProductDto
+                        {
+                            ProductId = item.Id,
+                            FeaturedProduct = item.IsFeaturedProduct,
+                            Amount = item.Amount,
+                            IsAvailable = isAvailable,
+                            ShortDescription = item.ShortDescription,
+                            BestSelling = item.IsBestSelling,
+                            LongDescription = item.LongDescription,
+                            InStock = item.InStock,
+                            CategoryId = item.CategoryId,
+                            ImageUrl = item.ImageUrl,
+                            Manufacturer = item.Manufacturer,
+                            Name = item.Name,
+                            Quantity = item.Quantity
+                        };
+                        myString.Add(getAllProduct);
+                    }
+                    return Ok(myString);
                 }
                 else
                 {
@@ -153,8 +182,31 @@ namespace Aduaba.Controllers
             if (searchParam == null)
             {
                 var products = _service.GetAllProducts();
-                var mappedProducts = _mapper.Map<IEnumerable<GetProductDto>>(products);
-                return Ok(mappedProducts);
+                List<GetProductDto> myString = new List<GetProductDto>(); ;
+                string isAvailable = default;
+                foreach (var item in products)
+                {
+                    if (item.InStock == true) isAvailable = "InStock";
+                    else isAvailable = "Out of Stock";
+                    var getAllProduct = new GetProductDto
+                    {
+                        ProductId = item.Id,
+                        FeaturedProduct = item.IsFeaturedProduct,
+                        Amount = item.Amount,
+                        IsAvailable = isAvailable,
+                        ShortDescription = item.ShortDescription,
+                        BestSelling = item.IsBestSelling,
+                        LongDescription = item.LongDescription,
+                        InStock = item.InStock,
+                        CategoryId = item.CategoryId,
+                        ImageUrl = item.ImageUrl,
+                        Manufacturer = item.Manufacturer,
+                        Name = item.Name,
+                        Quantity = item.Quantity
+                    };
+                    myString.Add(getAllProduct);
+                }
+                return Ok(myString);
             }
             else
             {
@@ -164,8 +216,31 @@ namespace Aduaba.Controllers
                     return Ok("No product found");
                 }else
                 {
-                    var mappedProducts = _mapper.Map<IEnumerable<GetProductDto>>(products);
-                    return Ok(mappedProducts);
+                    List<GetProductDto> myString = new List<GetProductDto>(); ;
+                    string isAvailable = default;
+                    foreach (var item in products)
+                    {
+                        if (item.InStock == true) isAvailable = "InStock";
+                        else isAvailable = "Out of Stock";
+                        var getAllProduct = new GetProductDto
+                        {
+                            ProductId = item.Id,
+                            FeaturedProduct = item.IsFeaturedProduct,
+                            Amount = item.Amount,
+                            IsAvailable = isAvailable,
+                            ShortDescription = item.ShortDescription,
+                            BestSelling = item.IsBestSelling,
+                            LongDescription = item.LongDescription,
+                            InStock = item.InStock,
+                            CategoryId = item.CategoryId,
+                            ImageUrl = item.ImageUrl,
+                            Manufacturer = item.Manufacturer,
+                            Name = item.Name,
+                            Quantity = item.Quantity
+                        };
+                        myString.Add(getAllProduct);
+                    }
+                    return Ok(myString);
                 }
                
             }
@@ -198,8 +273,31 @@ namespace Aduaba.Controllers
             if (bestSellingProducts == null) return Ok("No product Found");
             else
             {
-                var mappedBestSellingProducts = _mapper.Map<IEnumerable<GetProductDto>>(bestSellingProducts);
-                return Ok(mappedBestSellingProducts);
+                List<GetProductDto> myString = new List<GetProductDto>(); ;
+                string isAvailable = default;
+                foreach (var item in bestSellingProducts)
+                {
+                    if (item.InStock == true) isAvailable = "InStock";
+                    else isAvailable = "Out of Stock";
+                    var getAllProduct = new GetProductDto
+                    {
+                        ProductId = item.Id,
+                        FeaturedProduct = item.IsFeaturedProduct,
+                        Amount = item.Amount,
+                        IsAvailable = isAvailable,
+                        ShortDescription = item.ShortDescription,
+                        BestSelling = item.IsBestSelling,
+                        LongDescription = item.LongDescription,
+                        InStock = item.InStock,
+                        CategoryId = item.CategoryId,
+                        ImageUrl = item.ImageUrl,
+                        Manufacturer = item.Manufacturer,
+                        Name = item.Name,
+                        Quantity = item.Quantity
+                    };
+                    myString.Add(getAllProduct);
+                }
+                return Ok(myString);
             }
         }
 
@@ -211,8 +309,31 @@ namespace Aduaba.Controllers
             if (featuredProducts == null) return Ok("No product Found");
             else
             {
-                var mappedfeaturedProducts = _mapper.Map<IEnumerable<GetProductDto>>(featuredProducts);
-                return Ok(mappedfeaturedProducts);
+                List<GetProductDto> myString = new List<GetProductDto>(); ;
+                string isAvailable = default;
+                foreach (var item in featuredProducts)
+                {
+                    if (item.InStock == true) isAvailable = "InStock";
+                    else isAvailable = "Out of Stock";
+                    var getAllProduct = new GetProductDto
+                    {
+                        ProductId = item.Id,
+                        FeaturedProduct = item.IsFeaturedProduct,
+                        Amount = item.Amount,
+                        IsAvailable = isAvailable,
+                        ShortDescription = item.ShortDescription,
+                        BestSelling = item.IsBestSelling,
+                        LongDescription = item.LongDescription,
+                        InStock = item.InStock,
+                        CategoryId = item.CategoryId,
+                        ImageUrl = item.ImageUrl,
+                        Manufacturer = item.Manufacturer,
+                        Name = item.Name,
+                        Quantity = item.Quantity
+                    };
+                    myString.Add(getAllProduct);
+                }
+                return Ok(myString);
             }
         }
 
