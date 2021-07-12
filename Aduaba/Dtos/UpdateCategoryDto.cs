@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 
 namespace Aduaba.Dtos
 {
-    public class UpdateCategoryDto :AddCategoryDto
+    public class UpdateCategoryDto 
     {
-
+       
+        public string Name { get; set; }
+        public string ImageUrl { get; set; }
     }
 }
