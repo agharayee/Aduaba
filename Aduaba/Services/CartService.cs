@@ -132,12 +132,12 @@ namespace Aduaba.Services
             }
         }
 
-        public void RemoveFromCart(string productId, string customerId)
+        public void RemoveFromCart(string cartItemId, string customerId)
         {
             var customerWishList = _context.Carts.Include(w => w.CartItem).Where(c => c.CustomerId == customerId).ToList();
             foreach (var items in customerWishList)
             {
-                var itemTodelete = items.CartItem.FirstOrDefault(w => w.ProductId == productId);
+                var itemTodelete = items.CartItem.FirstOrDefault(w => w.Id == cartItemId);
                 items.CartItem.Remove(itemTodelete);
             }
             _context.SaveChanges();

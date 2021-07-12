@@ -44,7 +44,6 @@ namespace Aduaba.Controllers
             }
         }
 
-
         [HttpPost]
         [Route("Login")]
         public async Task<ActionResult> Login(LoginDto model)
@@ -109,8 +108,13 @@ namespace Aduaba.Controllers
         }
 
         [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ForgetPassword([FromQuery] string email, string token, [FromBody] ResetPasswordDto model)
+        public async Task<IActionResult> ForgetPassword([FromForm]ResetPasswordDto model)
         {
+            if(model.Token.Contains(","))
+            {
+                var trimedToken = model.Token.Remove(model.Token.Length - 1);
+                model.Token = trimedToken;
+            }
             var result = await _service.ResetPassword(model);
             if (result.ErrorMessage != null) return BadRequest(result.ErrorMessage);
             else

@@ -1,6 +1,7 @@
 ﻿using Aduaba.Data.DbContexts;
 using Aduaba.Data.Models;
 using Aduaba.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,7 @@ namespace Aduaba.Services
 
         public IEnumerable<Category> GetAllCategories()
         {
-            return _context.Categories.ToList();
+            return _context.Categories.Include(c => c.Products).ToList();
         }
 
         public Category GetCategoryById(string categoryId)

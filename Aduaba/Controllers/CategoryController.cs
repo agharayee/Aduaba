@@ -65,7 +65,9 @@ namespace Aduaba.Controllers
                 var categoryToReturn = new GetCategoryDto
                 {
                     Id = item.Id,
-                    Name = item.Name
+                    Name = item.Name,
+                    Length = item.Products.Count
+
                 };
                 getCategories.Add(categoryToReturn);
             }

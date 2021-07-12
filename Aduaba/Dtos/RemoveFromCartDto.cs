@@ -8,7 +8,7 @@ namespace Aduaba.Dtos
 {
     public class RemoveFromCartDto
     {
-        [Required(ErrorMessage ="ProductId is required")]
-        public string ProductId { get; set; }
+        [Required(ErrorMessage ="CartItemId is required")]
+        public string CartItemId { get; set; }
     }
 }

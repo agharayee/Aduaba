@@ -26,7 +26,7 @@ namespace Aduaba.Data.DbContexts
         public DbSet<WishList> WishList { get; set; }
         public DbSet<WishListItem> WishListItems { get; set; }
         public DbSet<CartWithSession> CartWithSessions { get; set; }
-        public DbSet<CustomerOTP> CustomerOTPs { get; set; }
+        //public DbSet<CustomerOTP> CustomerOTPs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -30,7 +30,7 @@ namespace Aduaba.Controllers
             public IActionResult RemoveFromCart([FromBody] RemoveFromCartDto cart)
             {
                 CustomerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                _service.RemoveFromCart(cart.ProductId, CustomerId);
+                _service.RemoveFromCart(cart.CartItemId, CustomerId);
                 return Ok("Removed Successfully");
 
 

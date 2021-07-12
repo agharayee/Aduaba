@@ -136,7 +136,9 @@ namespace Aduaba.Services
             {
                 Email = model.Email,
                 FirstName = model.FirstName,
-                LastName = model.LastName
+                LastName = model.LastName,
+                PhoneNumber = model.PhoneNumber
+                
             };
             var userWithSameEmail = await _userManager.FindByEmailAsync(model.Email);
             if (userWithSameEmail == null)
