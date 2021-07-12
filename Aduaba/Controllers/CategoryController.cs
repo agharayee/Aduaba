@@ -66,8 +66,8 @@ namespace Aduaba.Controllers
                 {
                     Id = item.Id,
                     Name = item.Name,
-                    Length = item.Products.Count
-
+                    Length = item.Products.Count,
+                    ImageUrl = item.ImageUrl
                 };
                 getCategories.Add(categoryToReturn);
             }
@@ -88,7 +88,8 @@ namespace Aduaba.Controllers
                     var categoryToReturn = new GetCategoryDto
                     {
                         Id = category.Id,
-                        Name = category.Name
+                        Name = category.Name,
+                        ImageUrl = category.ImageUrl
                     };
                     return Ok(categoryToReturn);
                 }
