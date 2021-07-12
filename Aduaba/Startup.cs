@@ -45,6 +45,8 @@ namespace Aduaba
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IShippingAddressService, ShippingAddressService>();
             services.AddScoped<IWishListService, WIshListService>();
+            services.AddControllers();
+            services.AddRazorPages();
             services.Configure<IdentityOptions>(option =>
             {
                 option.Password.RequireDigit = true;
@@ -118,8 +120,9 @@ namespace Aduaba
             }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseRouting();
+           
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -127,6 +130,8 @@ namespace Aduaba
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapRazorPages();
+              
             });
             MigrateDatabaseContexts(svp);
         }

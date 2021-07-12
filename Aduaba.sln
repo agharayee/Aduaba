@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aduaba", "Aduaba\Aduaba.csproj", "{9250987C-5D3E-4626-88F0-F537A23EE073}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aduaba", "Aduaba\Aduaba.csproj", "{9250987C-5D3E-4626-88F0-F537A23EE073}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aduaba.Data", "Aduaba.Data\Aduaba.Data.csproj", "{44D07FED-0099-4A08-857E-9E06910BF655}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aduaba.Data", "Aduaba.Data\Aduaba.Data.csproj", "{44D07FED-0099-4A08-857E-9E06910BF655}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

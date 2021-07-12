@@ -51,14 +51,37 @@ namespace Aduaba.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var products = _service.GetAllProducts();
-            var mappedProducts = _mapper.Map<IEnumerable<GetProductDto>>(products);
-            if (!mappedProducts.Any())
+            
+            if (!products.Any())
             {
                 return Ok("No product found");
             }
             else
             {
-                return Ok(mappedProducts);
+                List<GetProductDto> myString = new List<GetProductDto>(); ;
+                string isAvailable = default;
+                foreach (var item in products)
+                {
+                    if (item.InStock == true) isAvailable = "InStock";
+                    else isAvailable = "Out of Stock";
+                    var getAllProduct = new GetProductDto
+                    {
+                        FeaturedProduct = item.IsFeaturedProduct,
+                        Amount = item.Amount,
+                        IsAvailable = isAvailable,
+                        ShortDescription = item.ShortDescription,
+                        BestSelling = item.IsBestSelling,
+                        LongDescription = item.LongDescription,
+                        InStock = item.InStock,
+                        CategoryId = item.CategoryId,
+                        ImageUrl = item.ImageUrl,
+                        Manufacturer = item.Manufacturer,
+                        Name = item.Name,
+                        Quantity = item.Quantity
+                    };
+                    myString.Add(getAllProduct);
+                }
+                return Ok(myString);
             }
         }
         [HttpGet]

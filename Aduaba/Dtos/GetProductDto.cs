@@ -7,6 +7,6 @@ namespace Aduaba.Dtos
 {
     public class GetProductDto : AddProductDto
     {
-
+        public string IsAvailable{ get; set; }
     }
 }

@@ -18,12 +18,17 @@ namespace Aduaba.Services
         private readonly ApplicationDbContext _context;
         private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
         private readonly IMapper _mapper;
-        public OrderService(IShippingAddressService shippingAddress, ApplicationDbContext context, IConfiguration configuration, IMapper mapper)
+        private readonly ICartService _cartService;
+        private readonly IEmailSender _emailSender;
+        public OrderService(IShippingAddressService shippingAddress, ApplicationDbContext context, IConfiguration configuration, 
+                            IMapper mapper, ICartService cart, IEmailSender sender)
         {
             this._shippingAddress = shippingAddress;
             this._context = context;
             _configuration = configuration;
             _mapper = mapper;
+            _cartService = cart;
+            _emailSender = sender;
         }
         public async Task<ShippingAddress> GetCustomerShippingAddress(string customerId)
         {
@@ -87,6 +92,15 @@ namespace Aduaba.Services
             var orderstaus = await _context.OrderStatus.FirstOrDefaultAsync(c => c.Id == id);
             orderstaus.Status = "Shipping in Progress";
             orderItems.OrderStatus = orderstaus;
+            var user = await _context.Users.FirstOrDefaultAsync(c => c.Id == customerId);
+            
+            foreach(var item in orderItems.OrderItems)
+            {
+                _cartService.RemoveFromCart(item.Id, customerId);
+            }
+            var message = "<h3>Order Place Successfully.</h3>" + $"<p>Thanks for shopping from aduaba. " +
+                $"We wish to see you often.<br>To track your order go on your profile and click orders and you will be able to track your order</p>";
+            _emailSender.SendEmailAsync(user.Email, "Order Completed Successfully", message);
 
             await _context.SaveChangesAsync();
             return orderItems;

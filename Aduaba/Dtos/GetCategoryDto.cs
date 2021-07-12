@@ -8,5 +8,6 @@ namespace Aduaba.Dtos
     public class GetCategoryDto : AddCategoryDto
     {
         public string Id { get; set; }
+        public int Length { get; set; }
     }
 }

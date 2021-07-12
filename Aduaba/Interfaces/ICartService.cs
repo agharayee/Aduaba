@@ -11,7 +11,7 @@ namespace Aduaba.Interfaces
     {
         List<CartItem> GetCart(string customerId);
         void AddToCart(string productId, int quanity, string customerId);
-        void RemoveFromCart(string productId, string customerId);
+        void RemoveFromCart(string cartItemId, string customerId);
         void AddToCartWithSession(string productId, int quanity);
         void RemoveFromCartWithSession(string productId);
         CartService GetCartOfNotLoginUser(IServiceProvider services);

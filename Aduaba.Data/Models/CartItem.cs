@@ -17,5 +17,7 @@ namespace Aduaba.Data.Models
         public string CardId { get; set; }
         [Column(TypeName = "Money")]
         public decimal CartItemTotal { get; set; }
+        public virtual Order Order { get; set; }
+        public string OrderId { get; set; }
     }
 }
