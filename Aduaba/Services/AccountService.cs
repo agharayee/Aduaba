@@ -198,9 +198,10 @@ namespace Aduaba.Services
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var encodedToken = Encoding.UTF8.GetBytes(token);
                 var validToken = WebEncoders.Base64UrlEncode(encodedToken);
-                string returnUrl = $"https://localhost:5001/ResetPassword?email={email}&token={validToken}";
+                string returnUrl = $"https://teamaduaba.azurewebsites.net/ResetPassword?email={email}&token={validToken}";
+                //string developmentReturnUrl = $"https://localhost:5001/ResetPassword?email={email}&token={validToken}";
                 //var body = "This is a test message";
-                
+
                 _emailSender.SendEmailAsync(email, "Password Reset", "<h3>Password Reset, Please follow the instrutions to reset your password</h3>" + $"<p>To reset your password<a " +
                                              $"href='{ returnUrl  },'> Click here to reset your password</a></p>");
                // _textMessageService.SendMessage(user.PhoneNumber, body);
