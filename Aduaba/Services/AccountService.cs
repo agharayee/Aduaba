@@ -79,6 +79,7 @@ namespace Aduaba.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
+                PhoneNumber = user.PhoneNumber
                 };
             return loginDto;
             
