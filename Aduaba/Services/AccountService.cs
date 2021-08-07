@@ -93,13 +93,16 @@ namespace Aduaba.Services
             var customerId = Customer.Id;
 
             var cartItems = _cartService.GetShoppingCartItems();
-            foreach (var item in cartItems)
+            if(cartItems.Count != 0)
             {
-                productId = item.ProductId;
-                Quantity = item.Quantity;
-                _cartService.AddToCart(productId, Quantity, customerId);
-                _cartService.RemoveFromCartWithSession(productId);
-            }
+                foreach (var item in cartItems)
+                {
+                    productId = item.ProductId;
+                    Quantity = item.Quantity;
+                    _cartService.AddToCart(productId, Quantity, customerId);
+                    _cartService.RemoveFromCartWithSession(productId);
+                } 
+            }     
         }
 
         public async Task GetWishList(string email)
@@ -169,6 +172,7 @@ namespace Aduaba.Services
 
         public void UpdateCustomerDetails(Customer customer)
         {
+            
             _context.SaveChanges();
         }
 
@@ -209,8 +213,7 @@ namespace Aduaba.Services
                 forgetPassword = new ForgetPasswordDto
                 {
                     Token = validToken,
-                    RedirectUri = returnUrl,
-                    
+                    RedirectUri = returnUrl,                
                 };
                 return forgetPassword;
             }
@@ -252,7 +255,68 @@ namespace Aduaba.Services
                 ErrorMessage = AddErrors(result),
             };
         }
+        public async Task<string> PhoneNumberConfirmation(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            var token = await _userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
+            var body = $"Your Aduaba security code is: {token}";
+            _textMessageService.SendMessage(user.PhoneNumber, body);
+            return "Comfirmation Sent";
+        }
+        public async Task<string> PhoneNumberConfirmation(string email, string code)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return $"An error occurred while confirming Mobile Phone.";
+            }
+            var result = await _userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, code);
+            if (result.Succeeded)
+            {
+                return $"Please Enter your new Password";
+            }
+            return $"An Error Occured while trying to update your password";
+        }
 
+        public async Task<ResetPasswordReturnDto> ResetPasswordAsync(ResetPasswordDto resetPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(resetPassword.Email);
+            if (user == null)
+                return new ResetPasswordReturnDto
+                {
+                    IsSuccessful = false,
+                    Message = "No user associated with email",
+                };
+
+            if (resetPassword.NewPassword != resetPassword.ComfirmPassword)
+                return new ResetPasswordReturnDto
+                {
+                    IsSuccessful = false,
+                    Message = "Password doesn't match its confirmation",
+                };
+
+            var result = await _userManager.RemovePasswordAsync(user);
+
+            var changed = await _userManager.AddPasswordAsync(user, resetPassword.NewPassword);
+
+            if (changed.Succeeded)
+                return new ResetPasswordReturnDto
+                {
+                    Message = "Password has been reset successfully!",
+                    IsSuccessful = true,
+                };
+
+            return new ResetPasswordReturnDto
+            {
+                Message = "Something went wrong",
+                IsSuccessful = false,
+                ErrorMessage = AddErrors(result),
+            };
+        }
+        //public async Task<string> PasswordChangeWithPhoneNumberAsync(string userId, string code)
+        //{
+            
+        //}
         public bool CustomerExists(string customerId)
         {
             if (customerId == null) { throw new ArgumentNullException(nameof(customerId)); }

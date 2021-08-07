@@ -17,6 +17,8 @@ namespace Aduaba.Services
         {
             _context = context;
         }
+
+
         public void AddProduct(Product product)
         {
             if (product == null)

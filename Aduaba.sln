@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aduaba", "Aduaba\Aduaba.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aduaba.Data", "Aduaba.Data\Aduaba.Data.csproj", "{44D07FED-0099-4A08-857E-9E06910BF655}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aduaba.Test", "Aduaba.Test\Aduaba.Test.csproj", "{AD671FA1-C52B-4B60-B1E8-3A1B9D3A49A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{44D07FED-0099-4A08-857E-9E06910BF655}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44D07FED-0099-4A08-857E-9E06910BF655}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44D07FED-0099-4A08-857E-9E06910BF655}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD671FA1-C52B-4B60-B1E8-3A1B9D3A49A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD671FA1-C52B-4B60-B1E8-3A1B9D3A49A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD671FA1-C52B-4B60-B1E8-3A1B9D3A49A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD671FA1-C52B-4B60-B1E8-3A1B9D3A49A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

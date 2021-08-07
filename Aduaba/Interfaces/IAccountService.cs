@@ -19,5 +19,8 @@ namespace Aduaba.Interfaces
         bool CustomerExists(string customerId);
         void DeleteCustomer(Customer customer);
         Task<ResetPasswordReturnDto> ResetPassword(ResetPasswordDto resetPassword);
+        Task<string> PhoneNumberConfirmation(string email);
+        Task<string> PhoneNumberConfirmation(string email, string code);
+        Task<ResetPasswordReturnDto> ResetPasswordAsync(ResetPasswordDto resetPassword);
     }
 }

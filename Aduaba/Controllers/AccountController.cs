@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Aduaba.Controllers
 {
     [ApiController]
-    //[Route("Account")]
+    [Route("Account")]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _service;
@@ -107,20 +107,40 @@ namespace Aduaba.Controllers
             }
         }
 
-        [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ForgetPassword([FromForm]ResetPasswordDto model)
+        //[HttpPost("ResetPassword")]
+        //public async Task<IActionResult> ForgetPassword([FromForm]ResetPasswordDto model)
+        //{
+        //    if(model.Token.Contains(","))
+        //    {
+        //        var trimedToken = model.Token.Remove(model.Token.Length - 1);
+        //        model.Token = trimedToken;
+        //    }
+        //    var result = await _service.ResetPassword(model);
+        //    if (result.ErrorMessage != null) return BadRequest(result.ErrorMessage);
+        //    else
+        //    {
+        //        return Ok(result.Message);
+        //    }
+        //}
+
+        [HttpPost("PhoneNumberToken")]
+        public async Task<IActionResult> PhoneNumberToken(string email)
         {
-            if(model.Token.Contains(","))
-            {
-                var trimedToken = model.Token.Remove(model.Token.Length - 1);
-                model.Token = trimedToken;
-            }
-            var result = await _service.ResetPassword(model);
-            if (result.ErrorMessage != null) return BadRequest(result.ErrorMessage);
-            else
-            {
-                return Ok(result.Message);
-            }
+            var result = await _service.PhoneNumberConfirmation(email);
+            return Ok(result);
+        }
+
+        [HttpPost("ConfirmToken")]
+        public async Task<IActionResult> PhoneNumberConfirmation(string email, string code)
+        {
+            var response = await _service.PhoneNumberConfirmation(email, code);
+            return Ok(response);
+        }
+        [HttpPost("ResetPasswordByPhoneNumber")]
+        public async Task<IActionResult> ChangePasswordAsync([FromBody] ResetPasswordDto resetPassword)
+        {
+            var result = await _service.ResetPasswordAsync(resetPassword);
+            return Ok(result.Message);
         }
     }
 }
