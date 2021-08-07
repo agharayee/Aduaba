@@ -47,6 +47,10 @@ namespace Aduaba
             services.AddScoped<IWishListService, WIshListService>();
             services.AddControllers();
             services.AddRazorPages();
+            services.Configure<DataProtectionTokenProviderOptions>(opt =>
+            {
+                opt.TokenLifespan = TimeSpan.FromHours(2);
+            });
             services.Configure<IdentityOptions>(option =>
             {
                 option.Password.RequireDigit = true;
