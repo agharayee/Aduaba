@@ -24,7 +24,7 @@ namespace Aduaba.Services
             this._context = context;
         }
 
-        public void AddToCart(string productId, int quanity, string customerId)
+        public void AddToCart(string productId, string customerId, int quanity = 1)
         {
             List<CartItem> CartItems = new List<CartItem>();
             CartItem products = default;

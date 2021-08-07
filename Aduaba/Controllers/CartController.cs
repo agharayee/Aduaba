@@ -43,7 +43,7 @@ namespace Aduaba.Controllers
                 else
                 {
                     CustomerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    _service.AddToCart(cart.ProductId, cart.Quantity, CustomerId);
+                    _service.AddToCart(cart.ProductId, CustomerId, cart.Quantity);
                     return Ok("Added to Cart Successfully");
                 }
             }

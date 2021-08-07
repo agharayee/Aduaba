@@ -10,7 +10,7 @@ namespace Aduaba.Interfaces
     public interface ICartService
     {
         List<CartItem> GetCart(string customerId);
-        void AddToCart(string productId, int quanity, string customerId);
+        void AddToCart(string productId, string customerId, int quanity = 1);
         void RemoveFromCart(string cartItemId, string customerId);
         void AddToCartWithSession(string productId, int quanity);
         void RemoveFromCartWithSession(string productId);
