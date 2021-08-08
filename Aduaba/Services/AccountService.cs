@@ -99,7 +99,7 @@ namespace Aduaba.Services
                 {
                     productId = item.ProductId;
                     Quantity = item.Quantity;
-                    _cartService.AddToCart(productId, Quantity, customerId);
+                    _cartService.AddToCart(productId, customerId, Quantity);
                     _cartService.RemoveFromCartWithSession(productId);
                 } 
             }     

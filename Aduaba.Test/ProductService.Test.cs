@@ -11,10 +11,10 @@ using Xunit;
 
 namespace Aduaba.Test
 {
-    public class UnitTest1 : IDisposable
+    public class ProductTest : IDisposable
     {
         private readonly ApplicationDbContext _context;
-        public UnitTest1()
+        public ProductTest()
         {
             //By supplying new service provider for every context, we have a single database instance per test
             var serviceProvider = new ServiceCollection().
@@ -33,14 +33,14 @@ namespace Aduaba.Test
                 Enumerable.Range(1, 10).Select(t => new Product
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name ="Iphone 12",
+                    Name = "Iphone 12",
                     LongDescription = "Correct phone"
                 }));
             _context.SaveChanges();
         }
 
         [Fact]
-        public async Task GetAll_ReturnItems()
+        public async Task GetAllProducts()
         {
             //Arrange
             await _context.Products.AddRangeAsync(Enumerable.Range(1, 10).Select(t => new Data.Models.Product
@@ -64,31 +64,25 @@ namespace Aduaba.Test
         }
 
         [Fact]
-        public async Task AddNewProductAddsToDB()
+        public void AddNewProductToDB()
         {
-
             //Arrange
-            await _context.Products.AddRangeAsync(Enumerable.Range(1, 10).Select(t => new Data.Models.Product
+            var id = Guid.NewGuid().ToString();
+            var expected = new Product
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = id,
                 Amount = 500,
                 InStock = true,
                 ImageUrl = "viewing",
-            }));
-            await _context.SaveChangesAsync();
+            };
+            var createdProduct = new ProductService(_context);
+            createdProduct.AddProduct(expected);
 
             //Act
-            var productService = new ProductService(_context);
-            productService.AddProduct(new Product
-            {
-                Id = Guid.NewGuid().ToString(),
-                Amount = 500,
-                InStock = true,
-                ImageUrl = "viewing",
-            });
+            var actual = createdProduct.ProductExists(id);
 
             //Assert
-            //Assert.
+            Assert.True(actual);
         }
 
 
@@ -126,6 +120,7 @@ namespace Aduaba.Test
         public void DeleteProduct()
         {
             //Arrange
+            //Add a product to the db
             var productService = new ProductService(_context);
             var id = Guid.NewGuid().ToString();
             var expected = new Product
@@ -138,12 +133,162 @@ namespace Aduaba.Test
             productService.AddProduct(expected);
 
             //Act
+
+            //Then delete the added product
             productService.DeleteProduct(expected);
 
-            //Let's get created product if it does not return a value it means that it has been deleted
+            //check if the added product exist
             var actual = productService.ProductExists(id);
 
             Assert.False(actual);
         }
+
+        [Fact]
+        public async Task SearchResult()
+        {
+            //Act 
+            await _context.Products.AddRangeAsync(Enumerable.Range(1, 5).Select(t => new Data.Models.Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Amount = 500,
+                InStock = true,
+                Name = "Play Station 5",
+                LongDescription = "This is a ps 5 that can play on any TV",
+                ImageUrl = "viewing",
+            }));
+            await _context.SaveChangesAsync();
+
+            //Act
+            var productService = new ProductService(_context);
+            var result = await productService.SearchResult("ps 5");
+
+            //Assert
+            var model = Assert.IsAssignableFrom<List<Product>>(result);
+            Assert.Equal(5, model.Count());
+        }
+
+        [Fact]
+        public async Task SearchResultWithoutProduct()
+        {
+            //Act 
+            await _context.Products.AddRangeAsync(Enumerable.Range(1, 5).Select(t => new Data.Models.Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Amount = 500,
+                InStock = true,
+                Name = "Play Station 5",
+                LongDescription = "This is a ps 5 that can play on any TV",
+                ImageUrl = "viewing",
+            }));
+            await _context.SaveChangesAsync();
+
+            //Act
+            var productService = new ProductService(_context);
+            var result = await productService.SearchResult("gdhdhdhdhdhhdajs");
+
+            //Assert
+            var model = Assert.IsAssignableFrom<List<Product>>(result);
+            Assert.Empty(model);
+        }
+
+        [Fact]
+        public async Task FilterByPriceWithRightPrice()
+        {
+            //Act 
+            await _context.Products.AddRangeAsync(Enumerable.Range(1, 5).Select(t => new Data.Models.Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Amount = 500,
+                InStock = true,
+                Name = "Play Station 5",
+                LongDescription = "This is a ps 5 that can play on any TV",
+                ImageUrl = "viewing",
+
+            }));
+            await _context.SaveChangesAsync();
+
+            //Act
+            var productService = new ProductService(_context);
+            var result = await productService.FilterByPrice(300, 600);
+
+            //Assert
+            var model = Assert.IsAssignableFrom<List<Product>>(result);
+            Assert.Equal(5, model.Count());
+        }
+
+        [Fact]
+        public async Task FilterByPriceWithWrongPrice()
+        {
+            //Act 
+            await _context.Products.AddRangeAsync(Enumerable.Range(1, 5).Select(t => new Data.Models.Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Amount = 500,
+                InStock = true,
+                Name = "Play Station 5",
+                LongDescription = "This is a ps 5 that can play on any TV",
+                ImageUrl = "viewing",
+
+            }));
+            await _context.SaveChangesAsync();
+
+            //Act
+            var productService = new ProductService(_context);
+            var result = await productService.FilterByPrice(700, 600);
+
+            //Assert
+            var model = Assert.IsAssignableFrom<List<Product>>(result);
+            Assert.Empty(model);
+        }
+
+        [Fact]
+        public async Task ProductNotFeaturedProudct()
+        {
+            //Act 
+            await _context.Products.AddRangeAsync(Enumerable.Range(1, 5).Select(t => new Data.Models.Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Amount = 500,
+                InStock = true,
+                Name = "Play Station 5",
+                LongDescription = "This is a ps 5 that can play on any TV",
+                ImageUrl = "viewing",
+
+            }));
+            await _context.SaveChangesAsync();
+
+            //Act
+            var productService = new ProductService(_context);
+            var result = await productService.FeaturedProducts();
+
+            var model = Assert.IsAssignableFrom<List<Product>>(result);
+            Assert.Empty(model);
+        }
+
+        [Fact]
+        public async Task ProductAFeaturedProudct()
+        {
+            //Act 
+            await _context.Products.AddRangeAsync(Enumerable.Range(1, 5).Select(t => new Data.Models.Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Amount = 500,
+                InStock = true,
+                Name = "Play Station 5",
+                LongDescription = "This is a ps 5 that can play on any TV",
+                ImageUrl = "viewing",
+                IsFeaturedProduct = true
+            }));
+            await _context.SaveChangesAsync();
+
+            //Act
+            var productService = new ProductService(_context);
+            var result = await productService.FeaturedProducts();
+
+            var model = Assert.IsAssignableFrom<List<Product>>(result);
+            Assert.Equal(5, model.Count);
+        }
+
+
     }
 }

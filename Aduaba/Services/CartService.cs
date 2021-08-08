@@ -103,14 +103,14 @@ namespace Aduaba.Services
             {
                 CartItem wishListItem = default;
                 var productsInWishList = new List<CartItem>();
-                var customerWishList = _context.Carts.Include(c => c.CartItem).Where(c => c.CustomerId == customerId).ToList();
-                if (customerWishList == null)
+                var customerCart = _context.Carts.Include(c => c.CartItem).Where(c => c.CustomerId == customerId).ToList();
+                if (customerCart == null)
                 {
                     return null;
                 }
                 else
                 {
-                    foreach (var item in customerWishList)
+                    foreach (var item in customerCart)
                     {
                         foreach (var cart in item.CartItem)
                         {
@@ -134,8 +134,8 @@ namespace Aduaba.Services
 
         public void RemoveFromCart(string cartItemId, string customerId)
         {
-            var customerWishList = _context.Carts.Include(w => w.CartItem).Where(c => c.CustomerId == customerId).ToList();
-            foreach (var items in customerWishList)
+            var customerCart = _context.Carts.Include(w => w.CartItem).Where(c => c.CustomerId == customerId).ToList();
+            foreach (var items in customerCart)
             {
                 var itemTodelete = items.CartItem.FirstOrDefault(w => w.Id == cartItemId);
                 items.CartItem.Remove(itemTodelete);

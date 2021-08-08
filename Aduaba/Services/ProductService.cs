@@ -79,9 +79,10 @@ namespace Aduaba.Services
         public async Task<List<Product>> SearchResult(string searchParam)
         {
             var products = await _context.Products.Include(c => c.Category).Where(s => s.Name.Contains(searchParam) || s.ShortDescription
-                                        .Contains(searchParam) || s.LongDescription.Contains(searchParam) || s.Category.Name.Contains(searchParam))
-                                            .ToListAsync();
+                                   .Contains(searchParam) || s.LongDescription.Contains(searchParam) || s.Category.Name.Contains(searchParam))
+                                       .ToListAsync();
             return products;
+
         }
 
         public async Task<List<Product>> FilterByPrice(decimal? minPrice, decimal MaxPrice = decimal.MaxValue)

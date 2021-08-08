@@ -182,6 +182,10 @@ namespace Aduaba.Controllers
             if (searchParam == null)
             {
                 var products = _service.GetAllProducts();
+                if(!products.Any())
+                {
+                    return Ok($"No Product found with {searchParam} please try again");
+                }
                 List<GetProductDto> myString = new List<GetProductDto>(); ;
                 string isAvailable = default;
                 foreach (var item in products)
