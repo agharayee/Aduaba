@@ -33,7 +33,7 @@ namespace Aduaba.Controllers
                 _service.RemoveFromCart(cart.CartItemId, CustomerId);
                 return Ok("Removed Successfully");
 
-
+             
             }
             [HttpPost]
             [Route("AddToCart")]
@@ -87,8 +87,11 @@ namespace Aduaba.Controllers
                 {
                     await _service.UpdateQuantity(quantity.Quantity, quantity.CartItemId);
                     return Ok("Item quantity changed Successfully");
+                
 
                 }
             }
+
+
         }
 }
