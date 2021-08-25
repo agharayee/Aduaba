@@ -16,8 +16,6 @@ namespace Aduaba.Test
     public class CartServiceTest
     {
         private readonly ApplicationDbContext _context;
-        private Mock<UserManager<Customer>> _userManager;
-        private readonly UserManager<Customer> userManager;
         private readonly CartService _sut;
 
 
