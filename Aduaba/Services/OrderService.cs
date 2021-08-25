@@ -1,6 +1,7 @@
 ﻿using Aduaba.Data.DbContexts;
 using Aduaba.Data.Models;
 using Aduaba.Dtos;
+using Aduaba.HttpClients;
 using Aduaba.Interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Aduaba.Services
@@ -17,11 +19,16 @@ namespace Aduaba.Services
         private readonly IShippingAddressService _shippingAddress;
         private readonly ApplicationDbContext _context;
         private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
+        private readonly HttpClient _client;
         private readonly IMapper _mapper;
         private readonly ICartService _cartService;
         private readonly IEmailSender _emailSender;
+        private readonly IHttpClientCaller _gateway;
+        private readonly string PaystackBaseUrl;
+        private readonly string PaystackPublicKey;
         public OrderService(IShippingAddressService shippingAddress, ApplicationDbContext context, IConfiguration configuration, 
-                            IMapper mapper, ICartService cart, IEmailSender sender)
+                            IMapper mapper, ICartService cart, IEmailSender sender, IHttpClientCaller caller,
+                            HttpClient client)
         {
             this._shippingAddress = shippingAddress;
             this._context = context;
@@ -29,6 +36,11 @@ namespace Aduaba.Services
             _mapper = mapper;
             _cartService = cart;
             _emailSender = sender;
+            _gateway = caller;
+            PaystackBaseUrl = _configuration["Paystack:PaystackBaseUrl"];
+            PaystackPublicKey = _configuration["Paystack:PaystackSecret"];
+            _client = client;
+
         }
         public async Task<ShippingAddress> GetCustomerShippingAddress(string customerId)
         {
@@ -74,12 +86,45 @@ namespace Aduaba.Services
         }
 
 
-        public Task<List<Order>> OrderItems(string customerId)
+        public async Task<List<Order>> OrderItemsForInstancePayment(string customerId)
         {
-            throw new NotImplementedException();
+            //Get customer order 
+            //Calculate the total
+            //add shipping fee
+            //Redirect the user to payment page
+            //Check if payment was successful
+            //save to db
         }
 
-        public async Task<Order> OrderItems(string orderId, string customerId)
+        private decimal GetTotalForAnOrder(string orderId)
+        {
+            return 0.0M;
+        }
+
+        private decimal GetShippingFee(string orderId)
+        {
+            return 0.0M;
+        }
+
+        private decimal GetTotalPriceOfOrder(string orderId)
+        {
+            var totalPriceOfOrder = GetTotalForAnOrder(orderId);
+            var shippingFee = GetShippingFee(orderId);
+
+            return totalPriceOfOrder + shippingFee;
+        }
+
+        private void CallPaystackApi(string userId, decimal totalPriceTopay)
+        {
+            _client.DefaultRequestHeaders.Add("Authorization", PaystackPublicKey);
+            string initializePayment = _configuration["Paystack:Transaction"];
+            string requestUrl = string.Concat(PaystackBaseUrl, initializePayment);
+            //GetUser
+            var user = _context.Users.FirstOrDefaultAsync(u => u.Id == user);
+
+        }
+
+        public async Task<Order> OrderItemsForPayOnDelivery(string orderId, string customerId)
         {
             var orderItems = await _context.Orders.Include(c => c.OrderStatus).Include(c=> c.ShippingAddress).Include(c => c.Customer)
                 .Include(c => c.OrderItems).FirstOrDefaultAsync(o => o.Id == orderId);

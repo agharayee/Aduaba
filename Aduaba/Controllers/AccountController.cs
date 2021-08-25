@@ -107,21 +107,21 @@ namespace Aduaba.Controllers
             }
         }
 
-        //[HttpPost("ResetPassword")]
-        //public async Task<IActionResult> ForgetPassword([FromForm]ResetPasswordDto model)
-        //{
-        //    if(model.Token.Contains(","))
-        //    {
-        //        var trimedToken = model.Token.Remove(model.Token.Length - 1);
-        //        model.Token = trimedToken;
-        //    }
-        //    var result = await _service.ResetPassword(model);
-        //    if (result.ErrorMessage != null) return BadRequest(result.ErrorMessage);
-        //    else
-        //    {
-        //        return Ok(result.Message);
-        //    }
-        //}
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ForgetPassword([FromForm] ResetPasswordDto model)
+        {
+            if (model.Token.Contains(","))
+            {
+                var trimedToken = model.Token.Remove(model.Token.Length - 1);
+                model.Token = trimedToken;
+            }
+            var result = await _service.ResetPassword(model);
+            if (result.ErrorMessage != null) return BadRequest(result.ErrorMessage);
+            else
+            {
+                return Ok(result.Message);
+            }
+        }
 
         [HttpPost("PhoneNumberToken")]
         public async Task<IActionResult> PhoneNumberToken(string email)
@@ -137,7 +137,7 @@ namespace Aduaba.Controllers
             return Ok(response);
         }
         [HttpPost("ResetPasswordByPhoneNumber")]
-        public async Task<IActionResult> ChangePasswordAsync([FromBody] ResetPasswordDto resetPassword)
+        public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordDto resetPassword)
         {
             var result = await _service.ResetPasswordAsync(resetPassword);
             return Ok(result.Message);

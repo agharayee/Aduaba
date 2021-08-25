@@ -14,7 +14,7 @@ namespace Aduaba.Interfaces
         Task<Order> GetOrderItems(List<string> orderItemId, string customerId);
         Task<ShippingAddress> GetCustomerShippingAddress(string customerId);
         Task ProcessPayment();
-        Task<Order> OrderItems(string orderId, string customerId);
-        Task<List<Order>> OrderItems(string customerId);
+        Task<List<Order>> OrderItemsForInstancePayment(string customerId);
+        Task<Order> OrderItemsForPayOnDelivery(string orderId, string customerId);
     }
 }

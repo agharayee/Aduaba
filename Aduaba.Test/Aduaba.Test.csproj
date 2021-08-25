@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Aduaba\Aduaba.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helper.Test\" />
+  </ItemGroup>
+
 </Project>
